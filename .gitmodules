@@ -1,0 +1,6 @@
+[submodule "yuni"]
+	path = yuni
+	url = https://github.com/okuoku/yuni
+[submodule "rs-component-proto"]
+	path = rs-component-proto
+	url = https://github.com/okuoku/rs-component-proto
