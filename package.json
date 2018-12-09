@@ -1,0 +1,19 @@
+{
+  "name": "testsite",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "okuoku <mjt@cltn.org>",
+  "license": "CC0-1.0",
+  "private": true,
+  "scripts": {
+    "start": "node start.js"
+  },
+  "dependencies": {
+    "@yuniscm/yuniappjs-pkg": "*"
+  },
+  "devDependencies": {
+    "express": "^4.16.3",
+    "fs-extra": "^7.0.0",
+    "parcel": "^1.10.1"
+  }
+}
