@@ -9,8 +9,20 @@
 
 ;;
 
-(define dat0 (js-obj "entries" (list->js-array (gen-testdata/left))))
-(define dat1 (js-obj "entries" (list->js-array (gen-testdata/right))))
+(define dat0 (gen-testdata/left))
+(define dat1 (gen-testdata/right))
+
+(define (gen-tlstream dat)
+  (define (init cb)
+    (cb dat))
+  (define (more cb)
+    (cb '()))
+  (define (cmd x cb)
+    (case (car x)
+      ((init) (init cb))
+      ((more) (more cb))
+      (else "Do-nothing")))
+  ((make-tlstream cmd)))
 
 (define mainframe
   (make-react-element
@@ -27,7 +39,9 @@
      (make-react-class/raw
        "render" (wrap-this this
                            (let* ((props (js-ref this "props"))
-                                  (classes (js-ref props "classes")))
+                                  (classes (js-ref props "classes"))
+                                  (tlstream0 (gen-tlstream dat0))
+                                  (tlstream1 (gen-tlstream dat1)))
                              (ReactDiv 
                                (js-obj "className" (js-ref classes "screen"))
                                (ReactDiv (js-obj "className"
@@ -35,10 +49,10 @@
                                          (cmdbar))
                                (ReactDiv (js-obj "className" 
                                                  (js-ref classes "lower"))
-                                         (tlstream dat0)
+                                         tlstream0
                                          (ReactDiv 
                                            (js-obj "className"
                                                    (js-ref classes "hpad")))
-                                         (tlstream dat1)))))))))
+                                         tlstream1))))))))
          
 )
