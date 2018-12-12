@@ -32,6 +32,11 @@
          (loop nn (+ 1 cnt) (cons next cur)))
        (reverse cur)))))
 
+(define (gen-testdata ref len)
+  (ensure-testdata!)
+  (let ((l (gen-spine ref len)))
+   (map gen-one l)))
+
 (define (gen-testdata/left)
   (ensure-testdata!)
   (let ((l (gen-spine (testdata-head) 10)))
