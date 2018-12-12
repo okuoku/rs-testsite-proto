@@ -1,7 +1,5 @@
 (library (testdata)
-         (export gen-testdata/left
-                 gen-testdata/right
-                 )
+         (export )
          (import (yuni scheme)
                  (datafetch testing))
          
@@ -35,18 +33,6 @@
 (define (gen-testdata ref len)
   (ensure-testdata!)
   (let ((l (gen-spine ref len)))
-   (map gen-one l)))
-
-(define (gen-testdata/left)
-  (ensure-testdata!)
-  (let ((l (gen-spine (testdata-head) 10)))
-   (PCK (list 'LOGLENGTH-LEFT: (length l)))
-   (map gen-one l)))
-
-(define (gen-testdata/right)
-  (ensure-testdata!)
-  (let ((l (gen-spine (testdata-subhead) 10)))
-   (PCK (list 'LOGLENGTH-RIGHT: (length l)))
    (map gen-one l)))
 
 (define testdata-available #f)

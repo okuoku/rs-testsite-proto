@@ -9,11 +9,10 @@
 
 ;;
 
-(define dat0 (gen-testdata/left))
-(define dat1 (gen-testdata/right))
-
-(define (gen-tlstream dat)
+(define (gen-tlstream initref)
+  (define dat '())
   (define (init cb)
+    (set! dat (gen-testdata (testdata-refresolve initref) 10))
     (cb dat))
   (define (more ref cb)
     ;; FIXME: Optimize it later
@@ -47,8 +46,8 @@
        "render" (wrap-this this
                            (let* ((props (js-ref this "props"))
                                   (classes (js-ref props "classes"))
-                                  (tlstream0 (gen-tlstream dat0))
-                                  (tlstream1 (gen-tlstream dat1)))
+                                  (tlstream0 (gen-tlstream "refs/heads/master"))
+                                  (tlstream1 (gen-tlstream "refs/tags/0.8")))
                              (ReactDiv 
                                (js-obj "className" (js-ref classes "screen"))
                                (ReactDiv (js-obj "className"

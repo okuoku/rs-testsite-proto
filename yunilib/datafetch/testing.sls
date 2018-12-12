@@ -18,10 +18,17 @@
 (define REFCOUNT 0)
 (define REPOSITORY-REFS (js-obj))
 (define REPOSITORY-LINKS (js-obj))
+(define has-masterref? #f)
 
 (define (%refnamefilt x)
   (let ((r (js-ref MASTERBRANCHES x)))
    (if (js-undefined? r) x r)))
+
+(define (testdata-refresolve nam)
+  (prepare-testdata)
+  (let ((r (js-ref MASTERBRANCHES nam)))
+   (PCK 'REFRESOLVE: nam '=> r)
+   (if (js-undefined? r) #f r)))
 
 (define (testdata-head) (%refnamefilt MASTERREF-MAIN))
 (define (testdata-subhead) (%refnamefilt MASTERREF-SUB))
@@ -47,15 +54,7 @@
                  (let ((name (js-ref e "name"))
                        (ref (js-ref e "ref")))
                    (PCK (list 'NAME: name 'REF: ref))
-                   (when (PROJHEAD? name)
-                     (PCK (list 'ADD: name ref))
-                     (js-set! MASTERBRANCHES name ref)
-                     (set! MASTERREF* (cons ref MASTERREF*)))
-                   ;; FIXME: Remove them as we now have %refnamefilt
-                   (when (PROJSUBHEAD? name)
-                     (set! MASTERREF-SUB name))
-                   (when (PROJMAINHEAD? name)
-                     (set! MASTERREF-MAIN name)))) 
+                   (js-set! MASTERBRANCHES name ref)))
                l))))
 
 (define (ref-register! refname obj)
@@ -147,7 +146,9 @@
     (for-each fill-refs/recursive! branch-queue)))
 
 (define (prepare-testdata)
-  (CALC-heads)
-  (PCK MASTERREF*))
+  (unless has-masterref?
+    (CALC-heads)
+    (set! has-masterref? #t)
+    (PCK MASTERREF*)))
 
 )
