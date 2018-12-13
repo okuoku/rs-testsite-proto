@@ -751,9 +751,9 @@
   integrity sha512-41qEJgBH/TWgo5NFSvBCJ1qkoi3Q6ONSF2avrHq1LVEZfYpdHmj0y9SuTK+u9ZhG1sYQKBL1AWXKyLWP4RaUoQ==
 
 "@yuniscm/biwascore@*":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@yuniscm/biwascore/-/biwascore-0.0.2.tgz#a9492e5b90ba6a56868c09520c5a13f168f2575e"
-  integrity sha512-CiAamP6OFzj1bAGXM8c+oj/PXMGxU96oK8+XSgRSJTP8W+RWBrrEGbnioSPj7yAJxdEq7ENMudRvRH24YTwlVg==
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@yuniscm/biwascore/-/biwascore-0.0.4.tgz#4c27450b89ee3d5a0d417c0b409bb409a56f56a4"
+  integrity sha512-l9P7nqwkkicp61EiXdiCuyJrsc/Fa5SztNvlnQVMacKnsXsO6kaKw1p9AFOIV9MAOjkujVjWN+V0sovGFU8kzw==
   dependencies:
     underscore "^1.9.1"
     underscore.string "^3.3.4"
