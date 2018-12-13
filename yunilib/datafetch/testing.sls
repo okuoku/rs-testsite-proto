@@ -1,5 +1,6 @@
 (library (datafetch testing)
          (export prepare-testdata
+                 ref-terminal?
                  testdata-ref
                  testdata-refnext)
          (import (yuni scheme)
@@ -14,6 +15,16 @@
 (define REPOSITORY-LINKS (js-obj))
 (define has-masterref? #f)
 
+(define REF-TERMINAL-OBJ #t)
+
+(define (ref-terminal? ref)
+  (let ((e (equal? REF-TERMINAL-OBJ ref)))
+   (when e
+     (PCK 'TERMINAL-REF: ref))
+   e))
+
+(define (ref-terminal) REF-TERMINAL-OBJ)
+
 (define (%refnamefilt x)
   (let ((r (js-ref MASTERBRANCHES x)))
    (if (js-undefined? r) x r)))
@@ -25,15 +36,20 @@
    (if (js-undefined? r) #f r)))
 
 (define (testdata-ref x) (ref-read x))
-(define (testdata-refnext x) 
-  (ref-read x) ;; Bogus read to warmup the cache
+(define (testdata-refnext0 x)
   (let ((r (js-ref REPOSITORY-LINKS x)))
-   (if (js-undefined? r) #f r)))
+   (if (js-undefined? r)
+     #f r)))
+(define (testdata-refnext x) 
+  (or (testdata-refnext0 x)
+      (begin
+        (fill-refs/mainhistory-cache! x)
+        (testdata-refnext0 x)))) 
 
-(define (REQ-history ref)
+(define (REQ-history ref count)
   (let* ((r (do-fetch (string-append (BASEURL) "/mainhistory")
                       (list (cons 'from ref)
-                            (cons 'count 100))))
+                            (cons 'count count))))
          (res (js-ref r "result")))
     (let ((l (js-array->list res)))
      l)))
@@ -71,27 +87,35 @@
      (js-set! REPOSITORY-LINKS from to)
      (begin
        (unless (string=? to r)
-         (PCK (list 'INVALID-LINK r from '=> to)))
+         (PCK (list 'INVALID-LINK-UPDATE r from '=> to)))
        (js-set! REPOSITORY-LINKS from to)))))
 
 (define (fill-refs/mainhistory-cache! ref) ;; Cache upto 100 refs
+  (define has-more? #f)
   (define hit-known? #f)
+  (define first-hit? #f)
   (PCK (list 'ENTER: ref))
-  (let* ((l (REQ-history ref))
+  (let* ((l (REQ-history ref 100))
          (len (length l)))
     (PCK (list 'HISTORY-LEN: len))
+    (when (= (+ 1 100) len)
+      (set! has-more? #t))
     (let loop ((cur (car l))
                (q (cdr l)))
       ;; Process cur
       (let ((ident (js-ref cur "ident")))
        (let ((i (and (not (string=? ident ref)) (ref-read0 ident))))
         (cond
-          (i (set! hit-known? #t))
+          (i (unless first-hit?
+               (set! hit-known? #t)))
           (else
-            (ref-register! ident cur))))
+            (ref-register! ident cur)))
+        (set! first-hit? #t))
        (cond
          ((null? q)
-          (PCK (list 'TERM: ident))
+          (unless has-more?
+            (PCK (list 'TERM: ident))
+            (ref-link! ident (ref-terminal)))
           'do-nothing)
          ((not hit-known?)
           (ref-link! ident (js-ref (car q) "ident"))
