@@ -7,11 +7,18 @@
   (let* ((x (testdata-ref ref))
          (ident (js-ref x "ident"))
          (author (js-ref x "author"))
-         (message (js-ref x "message")))
+         (message (js-ref x "message"))
+         (date (js-ref x "date"))
+         (dateobj (parse-date date))
+         (year (date-year dateobj))
+         (month (date-month dateobj))
+         (day (date-day dateobj)))
     (list 'rev
           (substring ident 0 10) ;; FIXME: Perhaps needs to be longer?
           (cons 'author author)
-          (cons 'message message))))
+          (cons 'message message)
+          (cons 'date date)
+          (cons 'datetag (list year month day)))))
 
 (define (gen-one x)
   (if (pair? x)
