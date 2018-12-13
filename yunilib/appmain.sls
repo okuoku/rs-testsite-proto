@@ -55,6 +55,9 @@
   (set! Mainapp (main-app)))
 
 (define (main)
+  ;; FIXME: Init refcache...
+  (prepare-testdata)
+  
   (init-classes!)
   ;(js-invoke d "render" (Mainapp) (yuni/js-import "document-root"))
   (js-invoke d "render" (mainframe) (yuni/js-import "document-root")))
