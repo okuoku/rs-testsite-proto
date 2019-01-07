@@ -9,6 +9,8 @@
 
 ;;
 
+(define CONFIGOBJ #f)
+(define REPOSNAME #f)
 (define MASTERBRANCHES (js-obj))
 (define REFCOUNT 0)
 (define REPOSITORY-REFS (js-obj))
@@ -47,16 +49,22 @@
         (testdata-refnext0 x)))) 
 
 (define (REQ-history ref count)
-  (let* ((r (do-fetch (string-append (BASEURL) "/mainhistory")
-                      (list (cons 'from ref)
+  (let* ((r0 (do-fetch (string-append (BASEURL) "/read/mainhistory")
+                      (list (cons 'repos REPOSNAME) 
+                            (cons 'from ref)
                             (cons 'count count))))
+         (res0 (js-ref r0 "result"))
+         (r (do-simplepost (string-append (BASEURL) "/read/fetchrevs")
+                           res0
+                           (list (cons 'repos REPOSNAME))))
          (res (js-ref r "result")))
     (let ((l (js-array->list res)))
      l)))
 
 (define (CALC-heads)
   (set! has-masterref? #t)  
-  (let* ((r (do-fetch (string-append (BASEURL) "/heads")))
+  (let* ((r (do-fetch (string-append (BASEURL) "/read/heads")
+                      (list (cons 'repos REPOSNAME))))
          (res (js-ref r "result")))
     (let ((l (js-array->list res)))
      (for-each (lambda (e)
@@ -126,6 +134,7 @@
            'do-nothing))))))
 
 (define (prepare-testdata)
+  (set! REPOSNAME "ruby")
   (unless has-masterref?
     (CALC-heads)))
 

@@ -9,7 +9,7 @@
     "start": "node serve.js"
   },
   "dependencies": {
-    "@yuniscm/yuniappjs-pkg": "*"
+    "@yuniscm/yuniappjs-pkg": "0.0.5"
   },
   "devDependencies": {
     "express": "^4.16.3",

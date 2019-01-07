@@ -1,27 +1,18 @@
 (library (projconfig)
-         (export 
-           PROJHEAD?
-           BASEURL)
+         (export BASEURL
+                 ;; Tentative
+                 SET-REPOSNAME!
+                 REPOSNAME)
          (import (yuni scheme))
+
+
+;; Tentative
+(define xx-reposname "BOGUS")
+(define (SET-REPOSNAME! n)
+  (set! xx-reposname n))
+(define (REPOSNAME) xx-reposname)
 
 ;; API Config
 (define (BASEURL) "http://127.0.0.1:9999")
-
-;; Project Config
-
-; Target branches
-(define projmainhead "refs/heads/master")
-(define projsubhead "refs/tags/0.8")
-(define projheads*
-  (cons projmainhead 
-        (cons projsubhead
-              ;; FIXME: More heads here
-              '())))
-
-; Library
-(define (PROJHEAD? x) 
-  (member x projheads*))
-(define (PROJMAINHEAD? x) (equal? x projmainhead))
-(define (PROJSUBHEAD? x) (equal? x projsubhead))
          
 )
